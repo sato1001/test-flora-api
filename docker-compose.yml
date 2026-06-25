@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: dictionary-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dictionary
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dictionary-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: dictionary-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - dictionary-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dictionary-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/dictionary?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: super_secret_production_jwt_token_key_change_me
+      FREE_DICTIONARY_API_URL: https://api.dictionaryapi.dev/api/v2/entries/en
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - dictionary-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  dictionary-network:
+    driver: bridge
