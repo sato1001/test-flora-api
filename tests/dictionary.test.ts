@@ -143,19 +143,27 @@ describe('English Dictionary API Tests', () => {
   });
 
   describe('Entries Module', () => {
-    it('should list words publicly with offset pagination', async () => {
+    it('should list words with offset pagination', async () => {
       vi.mocked(prisma.dictionaryWord.count).mockResolvedValue(100);
       vi.mocked(prisma.dictionaryWord.findMany).mockResolvedValue([
         { id: '1', word: 'apple', createdAt: new Date() },
         { id: '2', word: 'apricot', createdAt: new Date() },
       ]);
 
-      const res = await request(app).get('/entries/en?limit=2&page=1');
+      const res = await request(app)
+        .get('/entries/en?limit=2&page=1')
+        .set('Authorization', authHeader);
 
       expect(res.status).toBe(200);
       expect(res.body.results).toEqual(['apple', 'apricot']);
       expect(res.body.totalDocs).toBe(100);
       expect(res.body.page).toBe(1);
+    });
+
+    it('should return 401 for listing words without authorization', async () => {
+      const res = await request(app).get('/entries/en?limit=2&page=1');
+      expect(res.status).toBe(401);
+      expect(res.body.message).toBe('Authentication token is missing');
     });
 
     it('should define word (cache MISS, call provider)', async () => {
@@ -239,10 +247,9 @@ describe('English Dictionary API Tests', () => {
         id: 'user-uuid-123',
         name: 'John Doe',
         email: 'john@example.com',
-        passwordHash: 'hashed',
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
+      } as any);
 
       const res = await request(app)
         .get('/user/me')

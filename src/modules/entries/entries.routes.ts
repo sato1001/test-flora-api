@@ -6,8 +6,8 @@ import { validate } from '../../middlewares/validate.middleware';
 
 export const entriesRouter = Router();
 
-// Public route to list/search words
-entriesRouter.get('/en', validate(listEntriesSchema), entriesController.list);
+// Authenticated route to list/search words
+entriesRouter.get('/en', authMiddleware, validate(listEntriesSchema), entriesController.list);
 
 // Authenticated routes (require Bearer Token)
 entriesRouter.get('/en/:word', authMiddleware, validate(wordParamSchema), entriesController.getDefinition);
