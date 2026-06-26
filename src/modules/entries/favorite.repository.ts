@@ -1,5 +1,6 @@
 import { Favorite } from '@prisma/client';
 import { prisma } from '../../database/prisma';
+import { mapFavoriteToResponse } from './entries.mapper';
 
 export class FavoriteRepository {
   async addFavorite(userId: string, word: string): Promise<Favorite> {
@@ -61,10 +62,7 @@ export class FavoriteRepository {
     const hasPrev = page > 1;
 
     return {
-      results: items.map((item) => ({
-        word: item.word,
-        addedAt: item.createdAt,
-      })),
+      results: items.map(mapFavoriteToResponse),
       totalDocs,
       page,
       totalPages,

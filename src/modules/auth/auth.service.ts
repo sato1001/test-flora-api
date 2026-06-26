@@ -33,8 +33,9 @@ export class AuthService {
     const token = this.generateToken(payload);
 
     return {
-      user: payload,
-      token,
+      id: user.id,
+      name: user.name,
+      token: `Bearer ${token}`,
     };
   }
 
@@ -58,8 +59,9 @@ export class AuthService {
     const token = this.generateToken(payload);
 
     return {
-      user: payload,
-      token,
+      id: user.id,
+      name: user.name,
+      token: `Bearer ${token}`,
     };
   }
 }

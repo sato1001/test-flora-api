@@ -37,15 +37,9 @@ const options: swaggerJSDoc.Options = {
         AuthResponse: {
           type: 'object',
           properties: {
-            user: {
-              type: 'object',
-              properties: {
-                id: { type: 'string', format: 'uuid' },
-                name: { type: 'string' },
-                email: { type: 'string', format: 'email' },
-              },
-            },
-            token: { type: 'string' },
+            id: { type: 'string', format: 'uuid' },
+            name: { type: 'string' },
+            token: { type: 'string', example: 'Bearer JWT.Token' },
           },
         },
         PaginationMeta: {
@@ -122,7 +116,7 @@ const options: swaggerJSDoc.Options = {
             },
           },
           responses: {
-            201: {
+            200: {
               description: 'User registered successfully',
               content: {
                 'application/json': {
@@ -292,7 +286,7 @@ const options: swaggerJSDoc.Options = {
                           type: 'object',
                           properties: {
                             word: { type: 'string' },
-                            accessedAt: { type: 'string', format: 'date-time' },
+                            added: { type: 'string', format: 'date-time' },
                           },
                         },
                       },
@@ -333,7 +327,7 @@ const options: swaggerJSDoc.Options = {
                           type: 'object',
                           properties: {
                             word: { type: 'string' },
-                            addedAt: { type: 'string', format: 'date-time' },
+                            added: { type: 'string', format: 'date-time' },
                           },
                         },
                       },
