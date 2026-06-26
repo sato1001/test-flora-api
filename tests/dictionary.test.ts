@@ -166,6 +166,24 @@ describe('English Dictionary API Tests', () => {
       expect(res.body.message).toBe('Authentication token is missing');
     });
 
+    it('should return 401 for defining a word without authorization', async () => {
+      const res = await request(app).get('/entries/en/apple');
+      expect(res.status).toBe(401);
+      expect(res.body.message).toBe('Authentication token is missing');
+    });
+
+    it('should return 401 for favoriting a word without authorization', async () => {
+      const res = await request(app).post('/entries/en/apple/favorite');
+      expect(res.status).toBe(401);
+      expect(res.body.message).toBe('Authentication token is missing');
+    });
+
+    it('should return 401 for unfavoriting a word without authorization', async () => {
+      const res = await request(app).delete('/entries/en/apple/unfavorite');
+      expect(res.status).toBe(401);
+      expect(res.body.message).toBe('Authentication token is missing');
+    });
+
     it('should define word (cache MISS, call provider)', async () => {
       vi.mocked(redisModule.getCache).mockResolvedValue(null);
       vi.mocked(prisma.history.create).mockResolvedValue({
