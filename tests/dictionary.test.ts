@@ -94,13 +94,10 @@ describe('English Dictionary API Tests', () => {
         .post('/auth/signup')
         .send({ name: 'John Doe', email: 'john@example.com', password: 'securePassword123' });
 
-      expect(res.status).toBe(201);
-      expect(res.body).toHaveProperty('token');
-      expect(res.body.user).toEqual({
-        id: 'user-uuid-123',
-        name: 'John Doe',
-        email: 'john@example.com',
-      });
+      expect(res.status).toBe(200);
+      expect(res.body.token).toContain('Bearer ');
+      expect(res.body.id).toBe('user-uuid-123');
+      expect(res.body.name).toBe('John Doe');
     });
 
     it('should login an existing user', async () => {
@@ -119,7 +116,9 @@ describe('English Dictionary API Tests', () => {
         .send({ email: 'john@example.com', password: 'securePassword123' });
 
       expect(res.status).toBe(200);
-      expect(res.body).toHaveProperty('token');
+      expect(res.body.token).toContain('Bearer ');
+      expect(res.body.id).toBe('user-uuid-123');
+      expect(res.body.name).toBe('John Doe');
     });
 
     it('should fail login with incorrect password', async () => {
@@ -294,7 +293,7 @@ describe('English Dictionary API Tests', () => {
         .set('Authorization', authHeader);
 
       expect(res.status).toBe(200);
-      expect(res.body.results).toEqual([{ word: 'apple', accessedAt: expect.any(String) }]);
+      expect(res.body.results).toEqual([{ word: 'apple', added: expect.any(String) }]);
       expect(res.body.totalDocs).toBe(1);
     });
 
@@ -309,7 +308,7 @@ describe('English Dictionary API Tests', () => {
         .set('Authorization', authHeader);
 
       expect(res.status).toBe(200);
-      expect(res.body.results).toEqual([{ word: 'apricot', addedAt: expect.any(String) }]);
+      expect(res.body.results).toEqual([{ word: 'apricot', added: expect.any(String) }]);
       expect(res.body.totalDocs).toBe(1);
     });
   });

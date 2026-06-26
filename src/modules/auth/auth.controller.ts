@@ -8,7 +8,7 @@ export class AuthController {
     try {
       const { name, email, password } = req.body;
       const result = await this.service.signup(name, email, password);
-      return res.status(201).json(result);
+      return res.status(200).json(result);
     } catch (error) {
       next(error);
     }

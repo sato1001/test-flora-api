@@ -8,7 +8,7 @@ export function responseTimeMiddleware(req: Request, res: Response, next: NextFu
   const originalWriteHead = res.writeHead;
   res.writeHead = function (statusCode: number, ...args: any[]): any {
     const duration = Date.now() - start;
-    res.setHeader('x-response-time', `${duration}ms`);
+    res.setHeader('x-response-time', `${duration}`);
     return originalWriteHead.apply(this, [statusCode, ...args] as any);
   };
 

@@ -1,5 +1,6 @@
 import { History } from '@prisma/client';
 import { prisma } from '../../database/prisma';
+import { mapHistoryToResponse } from './entries.mapper';
 
 export class HistoryRepository {
   async addHistory(userId: string, word: string): Promise<History> {
@@ -31,10 +32,7 @@ export class HistoryRepository {
     const hasPrev = page > 1;
 
     return {
-      results: items.map((item) => ({
-        word: item.word,
-        accessedAt: item.accessedAt,
-      })),
+      results: items.map(mapHistoryToResponse),
       totalDocs,
       page,
       totalPages,
