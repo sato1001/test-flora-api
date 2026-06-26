@@ -170,6 +170,7 @@ const options: swaggerJSDoc.Options = {
         get: {
           summary: 'List & Search Words',
           description: 'List words from the imported dictionary. Supports both standard offset-based pagination and cursor-based pagination.',
+          security: [{ BearerAuth: [] }],
           parameters: [
             { in: 'query', name: 'search', schema: { type: 'string' }, description: 'Prefix search pattern' },
             { in: 'query', name: 'limit', schema: { type: 'integer', default: 10 }, description: 'Page size' },
@@ -197,6 +198,7 @@ const options: swaggerJSDoc.Options = {
                 },
               },
             },
+            401: { description: 'Unauthorized' },
           },
         },
       },

@@ -5,6 +5,7 @@ import { DictionaryProvider } from '../../integrations/dictionary/DictionaryProv
 import { FreeDictionaryProvider } from '../../integrations/dictionary/FreeDictionaryProvider';
 import { getCache, setCache } from '../../cache/redis';
 import { logger } from '../../logger';
+import { AppError } from '../../utils/errors';
 
 export class EntriesService {
   constructor(
@@ -77,7 +78,15 @@ export class EntriesService {
 
     // 2. Cache MISS: call resilient external dictionary client
     logger.info({ word: lowercaseWord }, 'Word definition cache MISS');
-    const definition = await this.dictionaryProvider.getDefinition(lowercaseWord);
+    let definition;
+    try {
+      definition = await this.dictionaryProvider.getDefinition(lowercaseWord);
+    } catch (error: any) {
+      if (error.message === 'Word not found in the dictionary') {
+        throw new AppError(404, 'Word not found in the dictionary');
+      }
+      throw error;
+    }
 
     // 3. Write definition response to Cache (24-hour TTL)
     await setCache(cacheKey, JSON.stringify(definition));
